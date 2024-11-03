@@ -30,7 +30,7 @@ def datetime_converter(x):
     if x == DATETIME_NULL:
         return None
     elif len(x) > 19:
-        return datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f')
+        return datetime.strptime(x[:26], '%Y-%m-%d %H:%M:%S.%f')
     else:
         return datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
 

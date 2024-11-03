@@ -1,8 +1,10 @@
 from typing import Type, Union
 
-from sqlalchemy import types
+from sqlalchemy import types, TypeDecorator
 from sqlalchemy.sql.functions import Function
 from sqlalchemy.sql.type_api import to_instance
+
+import uuid
 
 
 class ClickHouseTypeEngine(types.TypeEngine):
@@ -74,8 +76,21 @@ class Nullable(ClickHouseTypeEngine):
         super(Nullable, self).__init__()
 
 
-class UUID(String):
+class UUID(TypeDecorator):
     __visit_name__ = 'uuid'
+    impl = String
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, uuid.UUID):
+            return str(value)
+        else:
+            return value
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return uuid.UUID(value)
+        else:
+            return value
 
 
 class LowCardinality(ClickHouseTypeEngine):

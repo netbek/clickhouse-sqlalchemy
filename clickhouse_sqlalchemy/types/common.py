@@ -188,7 +188,7 @@ class DateTime64(TypeDecorator, types.DateTime, ClickHouseTypeEngine):
 
     def process_bind_param(self, value, dialect):
         if isinstance(value, datetime.datetime):
-            return str(value)
+            return value.strftime('%Y-%m-%d %H:%M:%S.%f')
         else:
             return value
 

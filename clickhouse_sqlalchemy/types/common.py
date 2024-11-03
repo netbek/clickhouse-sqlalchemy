@@ -4,6 +4,7 @@ from sqlalchemy import types, TypeDecorator
 from sqlalchemy.sql.functions import Function
 from sqlalchemy.sql.type_api import to_instance
 
+import datetime
 import uuid
 
 
@@ -177,12 +178,19 @@ class DateTime(types.DateTime, ClickHouseTypeEngine):
         self.timezone = timezone
 
 
-class DateTime64(DateTime, ClickHouseTypeEngine):
+class DateTime64(TypeDecorator, types.DateTime, ClickHouseTypeEngine):
     __visit_name__ = 'datetime64'
+    impl = types.DateTime
 
     def __init__(self, precision=3, timezone=None):
         self.precision = precision
         super(DateTime64, self).__init__(timezone=timezone)
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, datetime.datetime):
+            return str(value)
+        else:
+            return value
 
 
 class Enum(types.Enum, ClickHouseTypeEngine):

@@ -7,6 +7,7 @@ from functools import partial
 from ipaddress import IPv4Address, IPv6Address
 
 import requests
+import uuid
 
 from ...exceptions import DatabaseException
 from .exceptions import HTTPException
@@ -33,6 +34,13 @@ def datetime_converter(x):
         return datetime.strptime(x[:26], '%Y-%m-%d %H:%M:%S.%f')
     else:
         return datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+
+
+def uuid_converter(x):
+    if x is None:
+        return None
+    else:
+        return uuid.UUID(x)
 
 
 def nullable_converter(subtype_str, x):
@@ -66,6 +74,7 @@ converters = {
     'Date': date_converter,
     'DateTime': datetime_converter,
     'DateTime64': datetime_converter,
+    'UUID': uuid_converter,
     'IPv4': IPv4Address,
     'IPv6': IPv6Address,
     'Nullable': nullable_converter,

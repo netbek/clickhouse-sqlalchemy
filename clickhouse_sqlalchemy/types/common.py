@@ -87,12 +87,6 @@ class UUID(TypeDecorator, types.String, ClickHouseTypeEngine):
         else:
             return value
 
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            return uuid.UUID(value)
-        else:
-            return value
-
 
 class LowCardinality(ClickHouseTypeEngine):
     __visit_name__ = 'lowcardinality'

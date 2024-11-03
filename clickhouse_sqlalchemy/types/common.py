@@ -77,9 +77,9 @@ class Nullable(ClickHouseTypeEngine):
         super(Nullable, self).__init__()
 
 
-class UUID(TypeDecorator):
+class UUID(TypeDecorator, types.String, ClickHouseTypeEngine):
     __visit_name__ = 'uuid'
-    impl = String
+    impl = types.String
 
     def process_bind_param(self, value, dialect):
         if isinstance(value, uuid.UUID):

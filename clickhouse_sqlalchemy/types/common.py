@@ -81,6 +81,10 @@ class UUID(TypeDecorator, types.String, ClickHouseTypeEngine):
     __visit_name__ = 'uuid'
     impl = types.String
 
+    @property
+    def python_type(self):
+        return uuid.UUID
+
     def process_bind_param(self, value, dialect):
         if isinstance(value, uuid.UUID):
             return str(value)

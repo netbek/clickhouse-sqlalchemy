@@ -51,7 +51,7 @@ class Escaper(object):
         return float(item)
 
     def escape_uuid(self, item):
-        return str(item)
+        return self.escape_string(str(item))
 
     def escape_item(self, item):
         if item is None:

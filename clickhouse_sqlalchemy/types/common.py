@@ -69,12 +69,27 @@ class Array(ClickHouseTypeEngine):
         return process
 
 
-class Nullable(ClickHouseTypeEngine):
-    __visit_name__ = 'nullable'
+class Nullable(TypeDecorator, types.String, ClickHouseTypeEngine):
+    __visit_name__ = "nullable"
+    impl = types.String
 
     def __init__(self, nested_type):
         self.nested_type = to_instance(nested_type)
         super(Nullable, self).__init__()
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        elif isinstance(self.nested_type, (Date, Date32)):
+            return value.strftime("%Y-%m-%d")
+        elif isinstance(self.nested_type, DateTime):
+            return value.strftime("%Y-%m-%d %H:%M:%S")
+        elif isinstance(self.nested_type, DateTime64):
+            return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+        elif isinstance(self.nested_type, UUID):
+            return str(value)
+        else:
+            return value
 
 
 class UUID(TypeDecorator, types.String, ClickHouseTypeEngine):
